@@ -28,10 +28,6 @@ namespace Xiippy
     define("XiippyReqMomentHeader", "XIIPPY-MOMENT-V1");
     define("InitiateXiippyPaymentPath", "/api/InitiateXiippyPayment");
 
-    define("Config_BaseAddress" , "https://localhost:19019");
-    define("Config_ApiKey" , "2PQt2fEEHtkxKwR0ogfY/phf13SM4FNtshyjzWdj30A=");
-    define("MerchantID" , "r_7f3458bd-6a7c-4f50-969c-f43b6d69a8d6");
-    
     
     class POSeComSDK
     {
