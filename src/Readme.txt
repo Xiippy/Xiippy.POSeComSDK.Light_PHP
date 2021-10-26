@@ -1,0 +1,1 @@
+Xiippy.POSeComSDK.Light lightweight payment gateway PHP SDK

@@ -1,0 +1,22 @@
+{
+  "name": "xiippy/posecomsdk",
+  "description": "Xiippy payment gateway PHP SDK",
+  "type": "library",
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "SimpleIT",
+      "email": "info@SimpleIT.Group"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Xiippy\\": "src/"
+    }
+  }
+} 
