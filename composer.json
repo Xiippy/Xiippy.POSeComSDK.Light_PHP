@@ -1,15 +1,15 @@
 {
   "name": "xiippy/posecomsdk",
-  "description": "Xiippy payment gateway PHP SDK",
+  "description": "Xiippy lightweight privacy-preserving online and in-person data-rich payments SDK for POS or e-commerce for PHP",
   "type": "library",
   "require": {
     "php": ">=5.3.0"
   },
-  "license": "proprietary",
+  "license": "MIT",
   "authors": [
     {
-      "name": "SimpleIT",
-      "email": "info@SimpleIT.Group"
+      "name": "Xiippy.ai",
+      "email": "contact@Xiippy.ai"
     }
   ],
   "minimum-stability": "dev",

@@ -1,1 +1,2 @@
-Source codes of the Xiippy PHP SDK.
+Xiippy lightweight privacy-preserving online and in-person data-rich payments SDK for POS or e-commerce for PHP
+Copyright 2021 Xiippy.ai. All Rights Reserved. Australian patents awarded. PCT patents pending.
