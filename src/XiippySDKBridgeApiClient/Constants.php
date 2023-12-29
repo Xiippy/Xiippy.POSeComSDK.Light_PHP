@@ -16,7 +16,7 @@ namespace Xiippy\POSeComSDK\Light\XiippySDKBridgeApiClient
 {
     class Constants
     {
-        public  static string $InitiateXiippyPaymentPath = "/api/InitiateXiippyPayment";
+        public  static string $InitiateXiippyPaymentPath = "/api/PaymentsV1/InitiateXiippyPayment";
 
         public  static string $QueryStringParam_sts = "sts";
         public  static string $QueryStringParam_rsid = "rsid";
@@ -25,6 +25,10 @@ namespace Xiippy\POSeComSDK\Light\XiippySDKBridgeApiClient
 
         public  static string $QueryStringParam_MerchantID = "mid";
         public  static string $QueryStringParam_cs = "cs";
+
+        public  static string $QueryStringParam_MerchantGroupID = "mgid";
+        public  static string $QueryStringParam_ShowLongXiippyText = "slxt";
+
 
     }
 }

@@ -26,6 +26,8 @@ namespace Xiippy\POSeComSDK\Light\Models
 
     class PaymentProcessingRequest
     {
+        public string $MerchantGroupID ;
+
         public string $MerchantID ;
         public float $Amount ;
         public string $Currency ;

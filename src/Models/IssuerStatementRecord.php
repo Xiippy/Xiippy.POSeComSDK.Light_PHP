@@ -88,7 +88,7 @@ namespace Xiippy\POSeComSDK\Light\Models
 
         // should be set internally by SDK when converting this into an internal type
 
-        //public uint ProtocolVersion = 1;
+        public int $ProtocolVersion ;
 
 
         // public uint StatementRecordVersion = 1;

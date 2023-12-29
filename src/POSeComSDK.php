@@ -26,7 +26,7 @@ namespace Xiippy
 
     define("XiippyReqSignatureHeader", "XIIPPY-API-SIG-V1");
     define("XiippyReqMomentHeader", "XIIPPY-MOMENT-V1");
-    define("InitiateXiippyPaymentPath", "/api/InitiateXiippyPayment");
+    define("InitiateXiippyPaymentPath", "/api/PaymentsV1/InitiateXiippyPayment");
 
     
     class POSeComSDK
@@ -102,11 +102,13 @@ namespace Xiippy
             $req->IssuerStatementRecord->TotalTaxAmount = 4;
 
 
-            $XiippySDKBridgeApiClient= new XiippySDKBridgeApiClient(true, Config_ApiKey, Config_BaseAddress.InitiateXiippyPaymentPath, MerchantID);
+            $XiippySDKBridgeApiClient= new XiippySDKBridgeApiClient(true, Config_ApiKey, Config_BaseAddress.InitiateXiippyPaymentPath, MerchantID, MerchantGroupID);
             $keys = $XiippySDKBridgeApiClient->InitiateXiippyPayment($req);
 
             $result = array(Constants::$QueryStringParam_spw=>"true");
             $result+= array(Constants::$QueryStringParam_MerchantID=> MerchantID);
+            $result+= array(Constants::$QueryStringParam_MerchantGroupID=> MerchantGroupID);
+            $result+= array(Constants::$QueryStringParam_ShowLongXiippyText=> "true");
 
             if(isset($keys->clientAuthenticator)){
                 $result+= array(Constants::$QueryStringParam_ca=> $keys->clientAuthenticator);

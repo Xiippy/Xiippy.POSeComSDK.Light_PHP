@@ -33,13 +33,16 @@ class XiippySDKBridgeApiClient
         private  bool $IsTest;
         private  string $BridgeAPIKey;
         private  string $MerchantID;
+        private  string $MerchantGroupID;
 
-        public function __construct(bool $_IsTest, string $_BridgeAPIKey, string $_BridgeBaseUrl, string $_MerchantID)
+        public function __construct(bool $_IsTest, string $_BridgeAPIKey, string $_BridgeBaseUrl, string $_MerchantID, string $_MerchantGroupID)
         {
             $this->BridgeAPIKey = $_BridgeAPIKey;
             $this->BridgeBaseUrl = $_BridgeBaseUrl;
             $this->IsTest = $_IsTest;
             $this->MerchantID = $_MerchantID;
+            $this->MerchantGroupID = $_MerchantGroupID;
+
         }
 
 
