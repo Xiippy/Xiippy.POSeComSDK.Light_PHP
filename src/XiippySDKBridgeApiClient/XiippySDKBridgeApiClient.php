@@ -11,29 +11,29 @@
 // - No secret or passwords or returnedObj must exist in the code when checked in
 //
 // *******************************************************************************************
-namespace Xiippy\POSeComSDK\Light
-{
-require_once __DIR__.'/../Utils\XiippySigv1Util.php';
-require_once __DIR__.'/../Models\PaymentProcessingRequest.php';
-require_once __DIR__.'/../Models\PaymentProcessingResponse.php';
-require_once 'Constants.php';
+namespace Xiippy\POSeComSDK\Light {
+    require_once __DIR__ . '/../Utils\XiippySigv1Util.php';
+    require_once __DIR__ . '/../Models\PaymentProcessingRequest.php';
+    require_once __DIR__ . '/../Models\PaymentProcessingResponse.php';
+    require_once 'Constants.php';
 
-use Xiippy\POSeComSDK\Light\Models\PaymentProcessingRequest;
-use Xiippy\POSeComSDK\Light\Utils\XiippySigv1Util;
-use Xiippy\POSeComSDK\Light\Models\PaymentProcessingResponse;
+    use Exception;
+    use Xiippy\POSeComSDK\Light\Models\PaymentProcessingRequest;
+    use Xiippy\POSeComSDK\Light\Utils\XiippySigv1Util;
+    use Xiippy\POSeComSDK\Light\Models\PaymentProcessingResponse;
 
-class XiippySDKBridgeApiClient
+    class XiippySDKBridgeApiClient
     {
-        public  string $XiippyReqSignatureHeader = "XIIPPY-API-SIG-V1";
-        public  string $XiippyReqMomentHeader = "XIIPPY-MOMENT-V1";
+        public string $XiippyReqSignatureHeader = "XIIPPY-API-SIG-V1";
+        public string $XiippyReqMomentHeader = "XIIPPY-MOMENT-V1";
 
 
-        private  string $ApplicationJson = "application/json";
+        private string $ApplicationJson = "application/json";
         private string $BridgeBaseUrl = "https://localhost:19019";
-        private  bool $IsTest;
-        private  string $BridgeAPIKey;
-        private  string $MerchantID;
-        private  string $MerchantGroupID;
+        private bool $IsTest;
+        private string $BridgeAPIKey;
+        private string $MerchantID;
+        private string $MerchantGroupID;
 
         public function __construct(bool $_IsTest, string $_BridgeAPIKey, string $_BridgeBaseUrl, string $_MerchantID, string $_MerchantGroupID)
         {
@@ -47,57 +47,56 @@ class XiippySDKBridgeApiClient
 
 
 
-        public function  InitiateXiippyPayment(PaymentProcessingRequest $req)
+        public function InitiateXiippyPayment(PaymentProcessingRequest $req)
         {
             $httpContent = json_encode($req);
             $opts = array(
-                CURLOPT_FOLLOWLOCATION=> 1,
-                CURLOPT_SSL_VERIFYPEER=> 0,
-                CURLOPT_POST=> 1,
-                CURLOPT_RETURNTRANSFER=> 1,
-                CURLOPT_HTTPHEADER=> XiippySigv1Util::AddXiippyV1RequestSignatureToClient($httpContent,$this->BridgeAPIKey),
-                CURLOPT_POSTFIELDS=> utf8_encode($httpContent)
+                CURLOPT_FOLLOWLOCATION => 1,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_POST => 1,
+                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_HTTPHEADER => XiippySigv1Util::AddXiippyV1RequestSignatureToClient($httpContent, $this->BridgeAPIKey),
+                CURLOPT_POSTFIELDS => utf8_encode($httpContent)
             );
-            
-            $ch = curl_init($this->BridgeBaseUrl); 
-            curl_setopt_array($ch, $opts); 
-            $response= curl_exec($ch); 
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); 
-            curl_close($ch); 
 
-            $data = json_decode($response,true);
+            $ch = curl_init($this->BridgeBaseUrl);
+            curl_setopt_array($ch, $opts);
+            $response = curl_exec($ch);
 
-            // this may require automapper instead!
-            $returnedObj = new PaymentProcessingResponse();
-            foreach ($data as $key => $value) 
-                if(isset($value))
-                    $returnedObj->{$key} = $value;
+            // Check for cURL errors
+            if ($response === false) {
+                $error_msg = curl_error($ch);
+                // Log the error message or handle it accordingly
+                //echo "cURL Error: " . $error_msg;
+                throw new Exception("cURL Error: " . $error_msg);
+            } else {
+                // Check HTTP status code
+                $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                if ($http_status != 200) {
+                    // Handle non-200 HTTP status codes
+                    //echo "HTTP Status Code: " . $http_status;
+                    throw new Exception("HTTP Status Code: " . $http_status);
+                } else {
+                    // Process the response
+                   // echo "Response: " . $response;
 
-            return $returnedObj;
+                    $data = json_decode($response, true);
 
+                    // this may require automapper instead!
+                    $returnedObj = new PaymentProcessingResponse();
+                    foreach ($data as $key => $value)
+                        if (isset($value))
+                            $returnedObj->{$key} = $value;
 
-            // // deal with headers
-            // client.DefaultRequestHeaders.Remove("Accept");
-            // // this is critical!
-            // httpContent.Headers.ContentType = new MediaTypeHeaderValue(ApplicationJson);
-            // client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(ApplicationJson));
+                    return $returnedObj;
 
+                }
+            }
 
-            // // add the authentication signature headers
-            // XiippySigv1Util.AddXiippyV1RequestSignatureToClient(resInStr, client, BridgeAPIKey);
+            // Close the cURL session
+            curl_close($ch);
 
-            // var response = await client.PostAsync($"{BridgeBaseUrl}{Constants.InitiateXiippyPaymentPath}", httpContent, cancellationToken);
-            // var responseString = await response.Content.ReadAsStringAsync();
-
-            // if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            // {
-            //     throw new Exception($"Response Code: {response.StatusCode} Body: {responseString}");
-            // }
-
-            // var returnedObj = JsonConvert.DeserializeObject<PaymentProcessingResponse>(responseString);
-
-
-            // return returnedObj;
+            return null;
         }
 
     }
