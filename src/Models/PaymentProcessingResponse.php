@@ -15,12 +15,12 @@ namespace Xiippy\POSeComSDK\Light\Models
 {
     class PaymentProcessingResponse
     {
-        public string $clientSecret ;
-        public string $clientAuthenticator ;
-        public string $randomStatementID ;
-        public string $statementTimeStamp ;
-        public string $externalUniqueID ;
-        public array $data ;
+        public string $ClientSecret ;
+        public string $ClientAuthenticator ;
+        public string $RandomStatementID ;
+        public string $StatementTimeStamp ;
+        public string $ExternalUniqueID ;
+        public array $Data ;
     }
 }
 ?>

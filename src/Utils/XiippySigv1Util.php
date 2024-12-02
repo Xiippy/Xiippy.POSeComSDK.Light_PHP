@@ -13,23 +13,20 @@ namespace Xiippy\POSeComSDK\Light\Utils
 //
 // *******************************************************************************************
 {
-     class XiippySigv1Util
+    class XiippySigv1Util
     {
-        
+     
         public static function AddXiippyV1RequestSignatureToClient(string $content, string $_BridgeAPIKey)
         {
             $now = round(microtime(true) * 1000);
             $result = array(
                 "Content-type: application/json",
                 "Accept: application/json",
-                XiippyReqMomentHeader.": ".$now,
-                XiippyReqSignatureHeader.": ".base64_encode(hash_hmac("sha256", utf8_encode(json_encode(json_decode($content)))."_".$now, base64_decode($_BridgeAPIKey), true))
+                "XIIPPY-MOMENT-V1".": ".$now,
+                "XIIPPY-API-SIG-V1".": ".base64_encode(hash_hmac("sha256", mb_convert_encoding(json_encode(json_decode($content)),"UTF-8")."_".$now, base64_decode($_BridgeAPIKey), true))
             );
             return $result;
         }
-
-
-
     }
 }
 ?>

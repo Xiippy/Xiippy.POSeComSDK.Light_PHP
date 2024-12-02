@@ -12,9 +12,8 @@
 //
 // *******************************************************************************************
     
-namespace Xiippy
+namespace Xiippy\POSeComSDK\Light
 {
-    require_once 'XiippySDKBridgeApiClient\XiippySDKBridgeApiClient.php';
 
     use Xiippy\POSeComSDK\Light\XiippySDKBridgeApiClient\Constants;
     use Xiippy\POSeComSDK\Light\XiippySDKBridgeApiClient;
@@ -24,9 +23,13 @@ namespace Xiippy
     use Xiippy\POSeComSDK\Light\Models\PaymentRecordCustomerAddress;
     use Xiippy\POSeComSDK\Light\Models\StatementItem;
 
+    use Xiippy\POSeComSDK\Light\Models\RefundCardPaymentRequest;
+    use Xiippy\POSeComSDK\Light\Models\RefundCardPaymentResponse;
+
     define("XiippyReqSignatureHeader", "XIIPPY-API-SIG-V1");
     define("XiippyReqMomentHeader", "XIIPPY-MOMENT-V1");
     define("InitiateXiippyPaymentPath", "/api/PaymentsV1/InitiateXiippyPayment");
+    define("RefundCardPaymentPath", "/api/PaymentsV1/RefundCardPayment");
 
     
     class POSeComSDK
@@ -50,84 +53,6 @@ namespace Xiippy
         }
 
 
-        public static function InitiatePaymentNGetiFrameUrl()
-        {
-
-            $UniqueID = POSeComSDK::GUID();
-
-            $req = new PaymentProcessingRequest();
-            $req->MerchantID = MerchantID;
-            $req->Amount = 2.5;
-            $req->Currency = 'aud';
-            $req->ExternalUniqueID = $UniqueID;
-            $req->IsPreAuth = false;
-            $req->IsViaTerminal = false;
-
-            $req->Customer = new PaymentRecordCustomer();
-            $req->Customer->CustomerAddress = new PaymentRecordCustomerAddress();
-            $req->Customer->CustomerAddress->CityOrSuburb='Brisbane';
-            $req->Customer->CustomerAddress->Country='Australia';
-            $req->Customer->CustomerAddress->FullName='Full Name';
-            $req->Customer->CustomerAddress->Line1='100 Queen St';
-            $req->Customer->CustomerAddress->PhoneNumber='+61400000000';
-            $req->Customer->CustomerAddress->PostalCode='4000';
-            $req->Customer->CustomerAddress->StateOrPrivince='Qld';
-            $req->Customer->CustomerEmail = 'dont@contact.me';
-            $req->Customer->CustomerName = 'Full Name';
-            $req->Customer->CustomerPhone = '+61400000000';
-
-            $req->IssuerStatementRecord = new IssuerStatementRecord();
-            $req->IssuerStatementRecord->UniqueStatementID = $UniqueID;
-            $req->IssuerStatementRecord->RandomStatementID = POSeComSDK::GUID();
-            $req->IssuerStatementRecord->StatementCreationDate = '0';
-            $req->IssuerStatementRecord->StatementTimeStamp = '99991122003344';
-            $req->IssuerStatementRecord->ProtocolVersion = '1';
-            $req->IssuerStatementRecord->Description = 'Test transaction #1';
-            $req->IssuerStatementRecord->DetailsInBodyBeforeItems = 'Description on the receipt before items';
-            $req->IssuerStatementRecord->DetailsInBodyAfterItems = 'Description on the receipt after items';
-            $req->IssuerStatementRecord->DetailsInHeader = 'Description on the footer';
-            $req->IssuerStatementRecord->DetailsInFooter = 'Description on the header';
-            
-            $StatementItem  = new StatementItem();
-            $StatementItem->Description = 'Description2';
-            $StatementItem->UnitPrice = 33;
-            $StatementItem->Url = 'Url2';
-            $StatementItem->Quantity = 1;
-            $StatementItem->Identifier = 'Identifier2';
-            $StatementItem->Tax = 3;
-            $StatementItem->TotalPrice = 33;
-            $req->IssuerStatementRecord->StatementItems[]=$StatementItem;
-            
-            $req->IssuerStatementRecord->TotalAmount = 44;
-            $req->IssuerStatementRecord->TotalTaxAmount = 4;
-
-
-            $XiippySDKBridgeApiClient= new XiippySDKBridgeApiClient(true, Config_ApiKey, Config_BaseAddress.InitiateXiippyPaymentPath, MerchantID, MerchantGroupID);
-            $keys = $XiippySDKBridgeApiClient->InitiateXiippyPayment($req);
-
-            $result = array(Constants::$QueryStringParam_spw=>"true");
-            $result+= array(Constants::$QueryStringParam_MerchantID=> MerchantID);
-            $result+= array(Constants::$QueryStringParam_MerchantGroupID=> MerchantGroupID);
-            $result+= array(Constants::$QueryStringParam_ShowLongXiippyText=> "true");
-
-            if(isset($keys->clientAuthenticator)){
-                $result+= array(Constants::$QueryStringParam_ca=> $keys->clientAuthenticator);
-            }
-
-            if(isset($keys->randomStatementID)){
-                $result+= array(Constants::$QueryStringParam_rsid=>$keys->randomStatementID);
-            }
-
-            if(isset($keys->statementTimeStamp)){
-                $result+= array(Constants::$QueryStringParam_sts=> $keys->statementTimeStamp);
-            }
-
-            if(isset($keys->clientSecret)){
-                $result+= array(Constants::$QueryStringParam_cs=> $keys->clientSecret);
-            }
-
-
-            return Config_BaseAddress."/Payments/Process?".POSeComSDK::build_http_query($result);
-        }
+      
     }
 }
