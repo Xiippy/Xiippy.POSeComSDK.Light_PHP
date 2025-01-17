@@ -26,7 +26,8 @@ namespace Xiippy\POSeComSDK\Light {
     use Xiippy\POSeComSDK\Light\Models\RefundCardPaymentRequest;
     use Xiippy\POSeComSDK\Light\Models\RefundCardPaymentResponse;
     use Xiippy\POSeComSDK\Light\XiippySDKBridgeApiClient\Constants;
-
+    use Xiippy\POSeComSDK\Light\Models\GetPaymentStatusRequest;
+    use Xiippy\POSeComSDK\Light\Models\GetPaymentStatusResponse;
     class XiippySDKBridgeApiClient
     {
         public string $XiippyReqSignatureHeader = "XIIPPY-API-SIG-V1";
@@ -154,6 +155,65 @@ namespace Xiippy\POSeComSDK\Light {
             }
     
             $returnedObj = new RefundCardPaymentResponse();
+            foreach ($data as $key => $value) {
+                if (isset($value)) {
+                    $returnedObj->{$key} = $value;
+                }
+            }
+    
+            return $returnedObj;
+        }
+
+
+
+        public function GetPaymentStatus(GetPaymentStatusRequest $req)
+        {
+            // Serialize request object to JSON
+            $resInStr = json_encode($req, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    
+            // Prepare cURL options
+            $opts = array(
+                CURLOPT_URL => $this->BridgeBaseUrl . Constants::$GetPaymentStatusPath,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST => true,
+                CURLOPT_HTTPHEADER => array_merge(
+                    XiippySigv1Util::AddXiippyV1RequestSignatureToClient($resInStr, $this->BridgeAPIKey),
+                    [
+                        "Accept: application/json",
+                        "Content-Type: application/json"
+                    ]
+                ),
+                CURLOPT_POSTFIELDS => $resInStr,
+                CURLOPT_SSL_VERIFYPEER => false, // Disable SSL verification for testing (set to true in production)
+            );
+    
+            // Initialize cURL session
+            $ch = curl_init();
+            curl_setopt_array($ch, $opts);
+            $response = curl_exec($ch);
+    
+            // Check for cURL errors
+            if ($response === false) {
+                $error_msg = curl_error($ch);
+                curl_close($ch);
+                throw new Exception("cURL Error: " . $error_msg);
+            }
+    
+            // Check HTTP status code
+            $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+    
+            if ($http_status !== 200) {
+                throw new Exception("HTTP Status Code: {$http_status} Body: {$response}");
+            }
+    
+            // Deserialize JSON response into GetPaymentStatusResponse
+            $data = json_decode($response, true);
+            if ($data === null) {
+                throw new Exception("Failed to decode response: {$response}");
+            }
+    
+            $returnedObj = new GetPaymentStatusResponse();
             foreach ($data as $key => $value) {
                 if (isset($value)) {
                     $returnedObj->{$key} = $value;

@@ -1,0 +1,4 @@
+{
+    "cSpell.mergeCSpellSettings": true,
+        "phpunit.executablePath": "./vendor/bin/phpunit"
+}

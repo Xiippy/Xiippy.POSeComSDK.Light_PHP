@@ -18,6 +18,10 @@ namespace Xiippy\POSeComSDK\Light\XiippySDKBridgeApiClient
     {
         public  static string $InitiateXiippyPaymentPath = "/api/PaymentsV1/InitiateXiippyPayment";
         public  static string $RefundCardPaymentPath = "/api/PaymentsV1/RefundCardPayment";
+        public  static string $GetPaymentStatusPath = "/api/PaymentsV1/GetPaymentStatus";
+
+       
+
 
         public  static string $QueryStringParam_sts = "sts";
         public  static string $QueryStringParam_rsid = "rsid";

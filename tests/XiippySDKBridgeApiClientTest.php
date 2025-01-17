@@ -5,6 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 use Xiippy\POSeComSDK\Light\XiippySDKBridgeApiClient;
 use Xiippy\POSeComSDK\Light\Models\RefundCardPaymentRequest;
+use Xiippy\POSeComSDK\Light\Models\GetPaymentStatusRequest;
 
 class XiippySDKBridgeApiClientTest extends TestCase
 {
@@ -64,6 +65,39 @@ class XiippySDKBridgeApiClientTest extends TestCase
             \Xiippy\POSeComSDK\Light\Models\RefundCardPaymentResponse::class,
             $response,
             'RefundCardPayment did not return an instance of RefundCardPaymentResponse.'
+        );
+    }
+
+
+    // Test 2: Test GetPaymentStatus functionality
+    public function testGetPaymentStatus()
+    {
+        $mockRequest = new GetPaymentStatusRequest();
+        $mockRequest->RandomStatementID = "b67ace18-564e-4189-bce7-56265d210934";
+        $mockRequest->Timestamp = "20250117012122";
+        $mockRequest->MerchantGroupID = "rg_bdffa371-be4b-41b4-a4de-e3d7b139605a";
+        $mockRequest->MerchantID = "r_bdffa371-be4b-41b4-a4de-e3d7b139605a";
+        
+
+        // Mocking the actual API call
+        $this->bridgeApiClient = $this->getMockBuilder(XiippySDKBridgeApiClient::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['GetPaymentStatus'])
+            ->getMock();
+
+        $mockResponse = $this->createMock(\Xiippy\POSeComSDK\Light\Models\GetPaymentStatusResponse::class);
+
+        $this->bridgeApiClient->expects($this->once())
+            ->method('GetPaymentStatus')
+            ->with($mockRequest)
+            ->willReturn($mockResponse);
+
+        $response = $this->bridgeApiClient->GetPaymentStatus($mockRequest);
+
+        $this->assertInstanceOf(
+            \Xiippy\POSeComSDK\Light\Models\GetPaymentStatusResponse::class,
+            $response,
+            'GetPaymentStatus did not return an instance of GetPaymentStatusResponse.'
         );
     }
 }

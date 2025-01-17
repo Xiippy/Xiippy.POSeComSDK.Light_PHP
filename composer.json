@@ -1,6 +1,6 @@
 {
   "name": "xiippy/posecomsdk",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Xiippy lightweight privacy-preserving online and in-person data-rich payments SDK for POS or e-commerce for PHP",
   "type": "library",
   "require": {
