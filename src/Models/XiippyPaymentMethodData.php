@@ -14,17 +14,37 @@
 
 namespace Xiippy\POSeComSDK\Light\Models;
 
-enum XiippyReadMethod: string {
-    case ContactlessEmv = 'ContactlessEmv';
-    case ContactlessMagstripeMode = 'ContactlessMagstripeMode';
-    case ContactEmv = 'ContactEmv';
-    case MagneticStripeFallback = 'MagneticStripeFallback';
-    case MagneticStripeTrack2 = 'MagneticStripeTrack2';
+class XiippyReadMethod {
+    public const ContactlessEmv = 'ContactlessEmv';
+    public const ContactlessMagstripeMode = 'ContactlessMagstripeMode';
+    public const ContactEmv = 'ContactEmv';
+    public const MagneticStripeFallback = 'MagneticStripeFallback';
+    public const MagneticStripeTrack2 = 'MagneticStripeTrack2';
+
+    public static function isValid(string $value): bool
+    {
+        static $values = null;
+        if ($values === null) {
+            $values = [
+                self::ContactlessEmv,
+                self::ContactlessMagstripeMode,
+                self::ContactEmv,
+                self::MagneticStripeFallback,
+                self::MagneticStripeTrack2,
+            ];
+        }
+        return in_array($value, $values, true);
+    }
 }
 
-enum XiippySwipeReason: string {
-    case ChipError = 'ChipError';
-    case EmptyCandidateList = 'EmptyCandidateList';
+class XiippySwipeReason {
+    public const ChipError = 'ChipError';
+    public const EmptyCandidateList = 'EmptyCandidateList';
+
+    public static function isValid(string $value): bool
+    {
+        return in_array($value, [self::ChipError, self::EmptyCandidateList], true);
+    }
 }
 
 class XiippyPaymentMethodData {
@@ -32,8 +52,8 @@ class XiippyPaymentMethodData {
     public string $EncryptedTrack2;
     public bool $IsInterac;
     public string $Ksn;
-    public XiippyReadMethod $ReadMethod;
-    public XiippySwipeReason $SwipeReason;
+    public string $ReadMethod;
+    public string $SwipeReason;
     public string $Tlv;
     public string $Track2;
 
@@ -42,11 +62,18 @@ class XiippyPaymentMethodData {
         string $EncryptedTrack2,
         bool $IsInterac,
         string $Ksn,
-        XiippyReadMethod $ReadMethod,
-        XiippySwipeReason $SwipeReason,
+        string $ReadMethod,
+        string $SwipeReason,
         string $Tlv,
         string $Track2
     ) {
+        if (!XiippyReadMethod::isValid($ReadMethod)) {
+            throw new \InvalidArgumentException("Invalid ReadMethod: {$ReadMethod}");
+        }
+        if (!XiippySwipeReason::isValid($SwipeReason)) {
+            throw new \InvalidArgumentException("Invalid SwipeReason: {$SwipeReason}");
+        }
+
         $this->Cryptogram = $Cryptogram;
         $this->EncryptedTrack2 = $EncryptedTrack2;
         $this->IsInterac = $IsInterac;

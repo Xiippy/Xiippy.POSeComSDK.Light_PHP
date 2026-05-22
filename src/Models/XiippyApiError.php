@@ -14,14 +14,32 @@
 
 namespace Xiippy\POSeComSDK\Light\Models;
 
-enum XiippyApiErrorType: string {
-    case ApiConnectionError = 'ApiConnectionError';
-    case ApiError = 'ApiError';
-    case AuthenticationError = 'AuthenticationError';
-    case CardError = 'CardError';
-    case IdempotencyError = 'IdempotencyError';
-    case InvalidRequestError = 'InvalidRequestError';
-    case RateLimitError = 'RateLimitError';
+class XiippyApiErrorType
+{
+    public const ApiConnectionError = 'ApiConnectionError';
+    public const ApiError = 'ApiError';
+    public const AuthenticationError = 'AuthenticationError';
+    public const CardError = 'CardError';
+    public const IdempotencyError = 'IdempotencyError';
+    public const InvalidRequestError = 'InvalidRequestError';
+    public const RateLimitError = 'RateLimitError';
+
+    public static function isValid(string $value): bool
+    {
+        static $values = null;
+        if ($values === null) {
+            $values = [
+                self::ApiConnectionError,
+                self::ApiError,
+                self::AuthenticationError,
+                self::CardError,
+                self::IdempotencyError,
+                self::InvalidRequestError,
+                self::RateLimitError,
+            ];
+        }
+        return in_array($value, $values, true);
+    }
 }
 
 class XiippyApiError {
@@ -32,7 +50,7 @@ class XiippyApiError {
     public string $Message;
     public string $Param;
     public XiippyPaymentContext $PaymentIntent;
-    public XiippyApiErrorType $Type;
+    public string $Type;
 
     // Server-side
     public string $PaymentMethodType;
@@ -47,11 +65,15 @@ class XiippyApiError {
         string $Message,
         string $Param,
         XiippyPaymentContext $PaymentIntent,
-        XiippyApiErrorType $Type,
+        string $Type,
         string $PaymentMethodType,
         string $Error,
         string $ErrorDescription
     ) {
+        if (!XiippyApiErrorType::isValid($Type)) {
+            throw new \InvalidArgumentException("Invalid XiippyApiErrorType: {$Type}");
+        }
+
         $this->Charge = $Charge;
         $this->Code = $Code;
         $this->DeclineCode = $DeclineCode;
